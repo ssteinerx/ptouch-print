@@ -1,7 +1,7 @@
 /*
 	libptouch - functions to help accessing a brother ptouch
 
-	Copyright (C) 2013-2020 Dominic Radermacher <blip@mockmoon-cybernetics.ch>
+	Copyright (C) 2013-2025 Dominic Radermacher <blip@mockmoon-cybernetics.ch>
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License version 3 as
@@ -44,10 +44,13 @@ struct _pt_tape_info tape_info[]= {
 };
 
 struct _pt_dev_info ptdevs[] = {
-	{0x04f9, 0x2007, "PT-2420PC", 128, 180, FLAG_RASTER_PACKBITS},	/* 180dpi, 128px, maximum tape width 24mm, must send TIFF compressed pixel data */
-	{0x04f9, 0x2011, "PT-2450PC", 128, 180, FLAG_RASTER_PACKBITS},
-	{0x04f9, 0x2019, "PT-1950", 128, 180, FLAG_RASTER_PACKBITS},	/* 180dpi, apparently 112px printhead ?, maximum tape width 18mm - unconfirmed if it works */
-	{0x04f9, 0x202c, "PT-1230PC", 128, 180, FLAG_NONE},		/* 180dpi, supports tapes up to 12mm - I don't know how much pixels it can print! */
+    /* ss -- add PT-2600, add field names.
+    {vid,    pid,    name,        max_px, dpi, flags}    */
+    {0x04f9, 0x200a, "PT-2600",   128,    180, FLAG_RASTER_PACKBITS},
+	{0x04f9, 0x2007, "PT-2420PC", 128,    180, FLAG_RASTER_PACKBITS},	/* 180dpi, 128px, maximum tape width 24mm, must send TIFF compressed pixel data */
+	{0x04f9, 0x2011, "PT-2450PC", 128,    180, FLAG_RASTER_PACKBITS},
+	{0x04f9, 0x2019, "PT-1950",   128,    180, FLAG_RASTER_PACKBITS},	/* 180dpi, apparently 112px printhead ?, maximum tape width 18mm - unconfirmed if it works */
+	{0x04f9, 0x202c, "PT-1230PC", 128,    180, FLAG_NONE},		/* 180dpi, supports tapes up to 12mm - I don't know how much pixels it can print! */
 	/* Notes about the PT-1230PC: While it is true that this printer supports
 	   max 12mm tapes, it apparently expects > 76px data - the first 32px
 	   must be blank. */
@@ -85,15 +88,15 @@ int ptouch_open(ptouch_dev *ptdev)
 	ssize_t cnt;
 	int r,i=0;
 
-	if ((*ptdev=malloc(sizeof(struct _ptouch_dev))) == NULL) {
+	if ((*ptdev=(ptouch_dev)malloc(sizeof(struct _ptouch_dev))) == NULL) {
 		fprintf(stderr, _("out of memory\n"));
 		return -1;
 	}
-	if (((*ptdev)->devinfo=malloc(sizeof(struct _pt_dev_info))) == NULL) {
+	if (((*ptdev)->devinfo=(pt_dev_info)malloc(sizeof(struct _pt_dev_info))) == NULL) {
 		fprintf(stderr, _("out of memory\n"));
 		return -1;
 	}
-	if (((*ptdev)->status=malloc(sizeof(struct _ptouch_stat))) == NULL) {
+	if (((*ptdev)->status=(pt_dev_stat)malloc(sizeof(struct _ptouch_stat))) == NULL) {
 		fprintf(stderr, _("out of memory\n"));
 		return -1;
 	}
